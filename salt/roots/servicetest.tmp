@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# this file is managed by salt
+# returns 0 if everything is successful, 1 if there is a problem
+{% for address in pillar.get('lb_nodes') %}
+if [ `curl -s {{ address }}:8080 | grep  -c "{{pillar.get('testingstring')}}"` != 1 ]
+then
+ echo Problem with node: {{ address }}
+ exit 2
+fi
+{% endfor %}
+if [ `curl -s localhost:80 | grep  -c "{{pillar.get('testingstring')}}"` != 1 ]
+then
+ echo Problem with node: localhost LB `hostname`
+ exit 2
+fi
+echo Services appear to be running properly.
+exit 0

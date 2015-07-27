@@ -1,0 +1,12 @@
+# this file is managed by Salt
+upstream helloworld  {
+{% for address in pillar.get('lb_nodes') %}
+  server {{ address }}:8080;
+{% endfor %}
+}
+
+server {
+  location / {
+    proxy_pass  http://helloworld;
+  }
+}
